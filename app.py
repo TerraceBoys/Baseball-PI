@@ -1,3 +1,4 @@
+#!.env/bin/python
 import config
 import urllib
 import json
