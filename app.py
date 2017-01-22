@@ -3,16 +3,13 @@ import config
 import urllib
 import json
 import time
+import display
 
 def main():
     while True:
-        try:
-            response = urllib.urlopen(config.API_URL)
-            data = json.loads(response.read())
-            for key, value in data.iteritems():
-                print "key: {0} value: {1}".format(key, value)
-        except:
-            print "error fetching game state"
+        response = urllib.urlopen(config.API_URL)
+        data = json.loads(response.read())
+        display.main(data)
         time.sleep(3)
 
 main()
