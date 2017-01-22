@@ -5,11 +5,20 @@ import json
 import time
 import display
 
+current_data = []
+
 def main():
+    global current_data
     while True:
-        response = urllib.urlopen(config.API_URL)
-        data = json.loads(response.read())
-        display.main(data)
-        time.sleep(3)
+        try:
+            response = urllib.urlopen(config.API_URL)
+            data = json.loads(response.read())
+            if data != current_data:
+                display.main(data)
+            current_data = data
+        except Exception as e:
+            print "Error fetching game state"
+            print e
+        time.sleep(2)
 
 main()
