@@ -18,6 +18,7 @@ import traceback
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from PIL import ImageSequence
 from rgbmatrix import Adafruit_RGBmatrix
 
 showIntro = True
@@ -41,12 +42,19 @@ def main(data):
     drawOuts(data['outs'])
     matrix.Clear()
     if showIntro:
-        baseballIntro = Image.open("baseball.gif")
-        baseballIntro.load()
-        matrix.SetImage(baseballIntro.im.id, 0, 0)
+        drawIntro()
         showIntro = False
-        time.sleep(7)
     matrix.SetImage(image.im.id, 0, 0)
+
+def drawIntro():
+    baseballIntro = Image.open("images/baseball.gif")
+    for frame in ImageSequence.Iterator(baseballIntro):
+        frame = frame.copy()
+        corrected_frame = Image.new("RGB", frame.size, (255, 255, 255))
+        corrected_frame.paste(frame)
+        matrix.SetImage(corrected_frame.im.id, 0, 0)
+        time.sleep(.25)
+        matrix.Clear()
 
 def drawRedScore(score1):
     global draw
