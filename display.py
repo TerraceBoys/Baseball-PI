@@ -20,6 +20,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from rgbmatrix import Adafruit_RGBmatrix
 
+showIntro = True
 matrix = Adafruit_RGBmatrix(32, 2)
 text_font = ImageFont.truetype("/usr/share/fonts/truetype/droid/DroidSans.ttf", 8)
 NUM_FONT = ImageFont.truetype("/usr/share/fonts/truetype/droid/DroidSans.ttf", 11)
@@ -27,6 +28,7 @@ NUM_FONT = ImageFont.truetype("/usr/share/fonts/truetype/droid/DroidSans.ttf", 1
 def main(data):
     print data
     global draw
+    global showIntro
     image = Image.new("RGB", (64, 32))  # Can be larger than matrix iff wanted!!
     draw = ImageDraw.Draw(image)  # Declare Draw instance before prims
     drawRedScore(str(data['score1']))
@@ -38,6 +40,12 @@ def main(data):
     drawStrikes(data['strikes'])
     drawOuts(data['outs'])
     matrix.Clear()
+    if showIntro:
+        baseballIntro = Image.open("baseball.gif")
+        baseballIntro.load()
+        matrix.SetImage(baseballIntro.im.id, 0, 0)
+        showIntro = False
+        time.sleep(7)
     matrix.SetImage(image.im.id, 0, 0)
 
 def drawRedScore(score1):
@@ -48,7 +56,7 @@ def drawRedScore(score1):
     draw.line([17, 1, 17, 15], fill=BORDER)
     draw.line([16, 15, 0, 15], fill=BORDER)
     draw.line([0, 14, 0, 1], fill=BORDER)
-    draw.text([3, 2], score1, font=NUM_FONT, fill=SCORE_COLOR)
+    draw.text([3, 2], score1 if len(score1) > 1 else "0{0}".format(score1), font=NUM_FONT, fill=SCORE_COLOR)
 
 def drawBlueScore(score2):
     global draw
@@ -58,7 +66,7 @@ def drawBlueScore(score2):
     draw.line([17, 17, 17, 31], fill=BORDER)
     draw.line([16, 31, 0, 31], fill=BORDER)
     draw.line([0, 30, 0, 17], fill=BORDER)
-    draw.text([3, 18], score2, font=NUM_FONT, fill=SCORE_COLOR)
+    draw.text([3, 18], score2 if len(score2) > 1 else "0{0}".format(score2), font=NUM_FONT, fill=SCORE_COLOR)
 
 def drawBatting(batting):
     global draw
